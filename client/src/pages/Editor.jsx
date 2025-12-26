@@ -1,7 +1,11 @@
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import * as api from "../utils/api";
 
 export default function Editor() {
+  const [searchParams] = useSearchParams();
+  const templateId = searchParams.get('template');
+
   const [resume, setResume] = useState({
     name: "Jane Doe",
     title: "Frontend Engineer",
@@ -57,6 +61,60 @@ export default function Editor() {
 
   // Error state
   const [error, setError] = useState(null);
+
+  // Load saved resume from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('resumeData');
+      if (saved) {
+        const resumeData = JSON.parse(saved);
+        // Convert resumeData back to editor format
+        setResume({
+          name: resumeData.personalInfo?.name || "",
+          title: resumeData.personalInfo?.title || "",
+          email: "",
+          phone: "",
+          linkedin: "",
+          portfolio: "",
+          location: "",
+          summary: resumeData.summary || "",
+          skills: resumeData.skills?.join(', ') || "",
+          experiences: resumeData.experience?.map(exp => ({
+            company: exp.company || "",
+            role: exp.position || "",
+            duration: exp.duration || "",
+            bullets: exp.bullets?.length > 0 ? exp.bullets : [""],
+          })) || [{
+            company: "",
+            role: "",
+            duration: "",
+            bullets: [""],
+          }],
+          education: [{
+            school: "",
+            degree: "",
+            field: "",
+            graduationDate: "",
+            gpa: "",
+          }],
+          projects: [{
+            name: "",
+            description: "",
+            technologies: "",
+            link: "",
+          }],
+          certifications: [{
+            name: "",
+            issuer: "",
+            date: "",
+            expiryDate: "",
+          }],
+        });
+      }
+    } catch (err) {
+      console.error('Failed to load saved resume:', err);
+    }
+  }, []);
 
   /* ------------------ Helpers ------------------ */
   const updateField = (field, value) => {
@@ -216,7 +274,20 @@ export default function Editor() {
       <div className="editor-panel">
         <div className="editor-header">
           <h2 className="editor-title">Resume Editor</h2>
-          <span className="progress-badge">{progress}% complete</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {templateId && (
+              <span style={{
+                fontSize: '13px',
+                color: '#666',
+                padding: '4px 12px',
+                background: '#e3f2fd',
+                borderRadius: '8px'
+              }}>
+                Template: {templateId}
+              </span>
+            )}
+            <span className="progress-badge">{progress}% complete</span>
+          </div>
         </div>
 
         {/* Error Message */}

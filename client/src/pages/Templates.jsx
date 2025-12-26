@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import * as api from "../utils/api";
 
 export default function Templates() {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,12 @@ export default function Templates() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUseTemplate = () => {
+    if (selected) {
+      navigate(`/editor?template=${selected}`);
     }
   };
 
@@ -99,7 +107,7 @@ export default function Templates() {
 
       {selected && (
         <div style={{ marginTop: '24px', textAlign: 'center' }}>
-          <button className="btn-primary">
+          <button className="btn-primary" onClick={handleUseTemplate}>
             Use This Template
           </button>
         </div>
