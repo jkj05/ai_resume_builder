@@ -639,7 +639,9 @@ export default function Editor() {
 
       {/* RIGHT PANEL - Template Preview */}
       <div className="preview-panel">
-        <PreviewComponent resume={resume} />
+        <div className="resume-card">
+          <PreviewComponent resume={resume} />
+        </div>
       </div>
     </section>
   );
