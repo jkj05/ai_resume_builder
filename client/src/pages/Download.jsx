@@ -1,10 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
+import ProfessionalPreview from "../components/templates/ProfessionalTemplate";
+import ClassyPreview from "../components/templates/ClassyTemplate";
+import SimplePreview from "../components/templates/SimpleTemplate";
+import StylishPreview from "../components/templates/StylishTemplate";
 
 export default function Download() {
-  const [resumeData, setResumeData] = useState(null);
+  const [resumeData, setResumeData] = useState(null); // ATS format from localStorage
+  const [editorResume, setEditorResume] = useState(null); // Mapped format for components
   const [loading, setLoading] = useState(false);
   const [templateId, setTemplateId] = useState('professional');
+  const printRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -13,144 +20,76 @@ export default function Download() {
         const data = JSON.parse(saved);
         setResumeData(data);
         setTemplateId(data.selectedTemplate || 'professional');
+
+        // Map ATS format back to Editor format for visual templates
+        const mappedResume = {
+          name: data.personalInfo?.name || "",
+          title: data.personalInfo?.title || "",
+          email: data.personalInfo?.email || "",
+          phone: data.personalInfo?.phone || "",
+          location: data.personalInfo?.location || "",
+          linkedin: data.personalInfo?.linkedin || "",
+          summary: data.summary || "",
+          skills: data.skills?.join(', ') || "",
+          experiences: data.experience?.map(exp => ({
+            company: exp.company || "",
+            role: exp.position || "",
+            duration: exp.duration || "",
+            bullets: exp.bullets?.length > 0 ? exp.bullets : [""],
+          })) || [],
+          education: data.education?.length > 0 ? data.education : [],
+        };
+        setEditorResume(mappedResume);
       }
     } catch (err) {
       console.error('Failed to load resume data:', err);
     }
   }, []);
 
-  const generatePDF = () => {
-    if (!resumeData) {
-      alert('No resume data found. Please create your resume in the Editor first.');
-      return;
-    }
+  const PreviewComponent = {
+    professional: ProfessionalPreview,
+    classy: ClassyPreview,
+    simple: SimplePreview,
+    stylish: StylishPreview,
+  }[templateId] || ProfessionalPreview;
 
+  const generatePDF = async () => {
+    if (!printRef.current) return;
     setLoading(true);
 
     try {
-      const doc = new jsPDF();
-      let yPosition = 20;
-      const marginLeft = 20;
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const maxWidth = pageWidth - 40;
+      const element = printRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2, // Higher scale for better quality
+        useCORS: true,
+        logging: true,
+      });
 
-      // Helper function to add text with word wrap
-      const addText = (text, fontSize, isBold = false, leftMargin = marginLeft) => {
-        doc.setFontSize(fontSize);
-        if (isBold) {
-          doc.setFont(undefined, 'bold');
-        } else {
-          doc.setFont(undefined, 'normal');
-        }
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
 
-        const lines = doc.splitTextToSize(text, maxWidth);
-        doc.text(lines, leftMargin, yPosition);
-        yPosition += lines.length * fontSize * 0.5 + 2;
-      };
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      // Name
-      if (resumeData.personalInfo?.name) {
-        doc.setFontSize(24);
-        doc.setFont(undefined, 'bold');
-        doc.text(resumeData.personalInfo.name, marginLeft, yPosition);
-        yPosition += 10;
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+
+      // Handle multi-page if content is long (basic implementation)
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
       }
 
-      // Title
-      if (resumeData.personalInfo?.title) {
-        doc.setFontSize(14);
-        doc.setFont(undefined, 'normal');
-        doc.setTextColor(100, 100, 100);
-        doc.text(resumeData.personalInfo.title, marginLeft, yPosition);
-        yPosition += 10;
-        doc.setTextColor(0, 0, 0);
-      }
-
-      // Divider
-      doc.setLineWidth(0.5);
-      doc.line(marginLeft, yPosition, pageWidth - marginLeft, yPosition);
-      yPosition += 8;
-
-      // Summary
-      if (resumeData.summary) {
-        doc.setFontSize(14);
-        doc.setFont(undefined, 'bold');
-        doc.text('SUMMARY', marginLeft, yPosition);
-        yPosition += 6;
-
-        doc.setFontSize(10);
-        doc.setFont(undefined, 'normal');
-        const summaryLines = doc.splitTextToSize(resumeData.summary, maxWidth);
-        doc.text(summaryLines, marginLeft, yPosition);
-        yPosition += summaryLines.length * 5 + 8;
-      }
-
-      // Skills
-      if (resumeData.skills && resumeData.skills.length > 0) {
-        doc.setFontSize(14);
-        doc.setFont(undefined, 'bold');
-        doc.text('SKILLS', marginLeft, yPosition);
-        yPosition += 6;
-
-        doc.setFontSize(10);
-        doc.setFont(undefined, 'normal');
-        const skillsText = resumeData.skills.join(', ');
-        const skillsLines = doc.splitTextToSize(skillsText, maxWidth);
-        doc.text(skillsLines, marginLeft, yPosition);
-        yPosition += skillsLines.length * 5 + 8;
-      }
-
-      // Experience
-      if (resumeData.experience && resumeData.experience.length > 0) {
-        doc.setFontSize(14);
-        doc.setFont(undefined, 'bold');
-        doc.text('EXPERIENCE', marginLeft, yPosition);
-        yPosition += 8;
-
-        resumeData.experience.forEach((exp) => {
-          // Check if we need a new page
-          if (yPosition > 250) {
-            doc.addPage();
-            yPosition = 20;
-          }
-
-          // Company and Position
-          doc.setFontSize(12);
-          doc.setFont(undefined, 'bold');
-          const positionText = `${exp.position || 'Position'} — ${exp.company || 'Company'}`;
-          doc.text(positionText, marginLeft, yPosition);
-          yPosition += 6;
-
-          // Duration
-          if (exp.duration) {
-            doc.setFontSize(9);
-            doc.setFont(undefined, 'italic');
-            doc.setTextColor(100, 100, 100);
-            doc.text(exp.duration, marginLeft, yPosition);
-            yPosition += 5;
-            doc.setTextColor(0, 0, 0);
-          }
-
-          // Bullets
-          if (exp.bullets && exp.bullets.length > 0) {
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'normal');
-            exp.bullets.forEach((bullet) => {
-              if (bullet.trim()) {
-                const bulletLines = doc.splitTextToSize(`• ${bullet}`, maxWidth - 5);
-                doc.text(bulletLines, marginLeft + 3, yPosition);
-                yPosition += bulletLines.length * 5;
-              }
-            });
-          }
-
-          yPosition += 5;
-        });
-      }
-
-      // Save the PDF
-      const fileName = `${resumeData.personalInfo?.name?.replace(/\s+/g, '_') || 'Resume'}_Resume.pdf`;
-      doc.save(fileName);
+      const fileName = `${editorResume.name?.replace(/\s+/g, '_') || 'Resume'}_Resume.pdf`;
+      pdf.save(fileName);
     } catch (error) {
       console.error('PDF generation failed:', error);
       alert('Failed to generate PDF. Please try again.');
@@ -160,55 +99,38 @@ export default function Download() {
   };
 
   const downloadText = () => {
-    if (!resumeData) {
-      alert('No resume data found. Please create your resume in the Editor first.');
-      return;
-    }
+    if (!resumeData) return;
 
     try {
       let textContent = '';
-
-      // Name and Title
-      if (resumeData.personalInfo?.name) {
-        textContent += `${resumeData.personalInfo.name}\n`;
-      }
-      if (resumeData.personalInfo?.title) {
-        textContent += `${resumeData.personalInfo.title}\n`;
-      }
+      if (resumeData.personalInfo?.name) textContent += `${resumeData.personalInfo.name}\n`;
+      if (resumeData.personalInfo?.title) textContent += `${resumeData.personalInfo.title}\n`;
       textContent += '\n' + '='.repeat(50) + '\n\n';
 
-      // Summary
       if (resumeData.summary) {
         textContent += 'SUMMARY\n';
         textContent += `${resumeData.summary}\n\n`;
       }
 
-      // Skills
       if (resumeData.skills && resumeData.skills.length > 0) {
         textContent += 'SKILLS\n';
         textContent += `${resumeData.skills.join(', ')}\n\n`;
       }
 
-      // Experience
       if (resumeData.experience && resumeData.experience.length > 0) {
         textContent += 'EXPERIENCE\n\n';
         resumeData.experience.forEach((exp) => {
           textContent += `${exp.position || 'Position'} — ${exp.company || 'Company'}\n`;
-          if (exp.duration) {
-            textContent += `${exp.duration}\n`;
-          }
-          if (exp.bullets && exp.bullets.length > 0) {
+          if (exp.duration) textContent += `${exp.duration}\n`;
+          if (exp.bullets) {
             exp.bullets.forEach((bullet) => {
-              if (bullet.trim()) {
-                textContent += `• ${bullet}\n`;
-              }
+              if (bullet.trim()) textContent += `• ${bullet}\n`;
             });
           }
           textContent += '\n';
         });
       }
 
-      // Create download
       const blob = new Blob([textContent], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -217,15 +139,13 @@ export default function Download() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Text download failed:', error);
-      alert('Failed to download text version. Please try again.');
     }
   };
 
   return (
-    <section>
+    <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px' }}>
       <h2 className="page-title">Download Resume</h2>
       <p className="page-subtitle">
         Export your resume in ATS-friendly PDF format
@@ -234,68 +154,85 @@ export default function Download() {
         </span>}
       </p>
 
-      {!resumeData && (
-        <div style={{
-          padding: '16px',
-          background: '#fff3cd',
-          borderRadius: '8px',
-          marginBottom: '16px',
-          color: '#856404',
-        }}>
+      {!editorResume && (
+        <div style={{ padding: '16px', background: '#fff3cd', color: '#856404', borderRadius: '8px' }}>
           ⚠️ No resume data found. Please create your resume in the Editor first.
         </div>
       )}
 
-      <div className="download-options" style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '12px',
-        maxWidth: '400px',
-      }}>
-        <button
-          className="btn-primary"
-          onClick={generatePDF}
-          disabled={loading || !resumeData}
-        >
-          {loading ? 'Generating...' : '📄 Download PDF'}
-        </button>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '32px', marginTop: '24px' }}>
 
-        <button
-          className="btn-ghost"
-          onClick={downloadText}
-          disabled={!resumeData}
-        >
-          📝 Download Text Version
-        </button>
+        {/* Left Column: Actions */}
+        <div className="download-actions">
+          <div className="download-options" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <button
+              className="btn-primary"
+              onClick={generatePDF}
+              disabled={loading || !editorResume}
+              style={{ fontSize: '16px', padding: '12px' }}
+            >
+              {loading ? 'Generating PDF...' : '📄 Download PDF'}
+            </button>
 
-        <div style={{
-          marginTop: '16px',
-          padding: '16px',
-          background: '#e3f2fd',
-          borderRadius: '8px',
-          fontSize: '14px',
-        }}>
-          <strong>💡 Tip:</strong> The PDF version is ATS-friendly and uses a clean, professional format that passes automated screening systems.
-        </div>
-      </div>
+            <button
+              className="btn-ghost"
+              onClick={downloadText}
+              disabled={!editorResume}
+            >
+              📝 Download Text Version
+            </button>
 
-      {resumeData && (
-        <div style={{
-          marginTop: '32px',
-          padding: '20px',
-          background: '#f8f9fa',
-          borderRadius: '12px',
-          border: '1px solid #dee2e6',
-        }}>
-          <h3 style={{ fontSize: '16px', marginBottom: '12px' }}>Resume Preview</h3>
-          <div style={{ fontSize: '14px', color: '#495057' }}>
-            <p><strong>Name:</strong> {resumeData.personalInfo?.name || 'Not set'}</p>
-            <p><strong>Title:</strong> {resumeData.personalInfo?.title || 'Not set'}</p>
-            <p><strong>Experience Entries:</strong> {resumeData.experience?.length || 0}</p>
-            <p><strong>Skills:</strong> {resumeData.skills?.length || 0} listed</p>
+            <div style={{
+              marginTop: '16px',
+              padding: '16px',
+              background: '#e3f2fd',
+              borderRadius: '8px',
+              fontSize: '14px',
+              lineHeight: '1.5'
+            }}>
+              <strong>💡 Visual PDF Download</strong><br />
+              The PDF will now look exactly like the preview on the right, preserving your chosen template's fonts, colors, and layout.
+            </div>
           </div>
         </div>
-      )}
+
+        {/* Right Column: Visual Preview */}
+        <div style={{ minHeight: '500px' }}>
+          <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>Document Preview</h3>
+          {editorResume ? (
+            <div
+              style={{
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                overflow: 'hidden',
+                background: 'white'
+              }}
+            >
+              {/* 
+                   We use an inner container for the ref so we capture ONLY the resume content 
+                   and not the border/shadow of the wrapper 
+                */}
+              <div ref={printRef} style={{ background: 'white', width: '100%' }}>
+                <PreviewComponent resume={editorResume} />
+              </div>
+            </div>
+          ) : (
+            <div style={{
+              height: '400px',
+              background: '#f8f9fa',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#6c757d'
+            }}>
+              Preview will appear here
+            </div>
+          )}
+        </div>
+
+      </div>
     </section>
   );
 }
