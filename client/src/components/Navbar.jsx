@@ -14,7 +14,6 @@ export default function Navbar() {
         <nav className="nav-links">
           <Link to="/dashboard" className="nav-link">Dashboard</Link>
           <Link to="/templates" className="nav-link">Templates</Link>
-          <Link to="/editor" className="nav-link">Editor</Link>
           <Button asLink to="/editor">Start Building</Button>
         </nav>
       </div>
