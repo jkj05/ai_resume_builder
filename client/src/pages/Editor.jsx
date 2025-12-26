@@ -620,6 +620,21 @@ export default function Editor() {
         <button className="btn-ghost" onClick={addEducation}>
           + Add Education
         </button>
+
+        {/* Download Section */}
+        <h3 className="section-heading">Download Resume</h3>
+        <div style={{ display: 'flex', gap: '12px', flexDirection: 'column' }}>
+          <button
+            className="btn-primary"
+            onClick={() => window.location.href = '/download'}
+            style={{ width: '100%' }}
+          >
+            📄 Download as PDF
+          </button>
+          <p style={{ fontSize: '13px', color: '#666', margin: 0 }}>
+            Export your resume as ATS-friendly PDF using the {templateId} template
+          </p>
+        </div>
       </div>
 
       {/* RIGHT PANEL - Template Preview */}
