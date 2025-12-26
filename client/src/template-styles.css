@@ -14,7 +14,7 @@
     background: #D99748;
     color: white;
     padding: 40px 30px;
-    width: 30%;
+    width: 35%;
     min-height: 100%;
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -23,7 +23,7 @@
 
 .resume-card-professional .main-content {
     padding: 40px 30px;
-    width: 70%;
+    width: 65%;
 }
 
 .resume-card-professional .sidebar h1 {
