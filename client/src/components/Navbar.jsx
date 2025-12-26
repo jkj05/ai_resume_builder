@@ -7,7 +7,7 @@ export default function Navbar() {
     <header className="nav">
       <div className="nav-inner">
         <Link to="/" className="brand">
-          <div className="brand-logo">AI</div>
+          <img src="/logo.png" alt="AI Resume Builder" className="brand-logo" />
           <div className="brand-name">ResumeCraft</div>
         </Link>
 

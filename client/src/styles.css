@@ -58,13 +58,10 @@ body{
 .brand-logo{
   width:44px;
   height:44px;
+  object-fit: contain;
+  padding: 4px;
   border-radius:10px;
   background:var(--soft);
-  color:var(--primary);
-  display:grid;
-  place-items:center;
-  font-weight:700;
-  font-size:16px;
   box-shadow:var(--shadow);
 }
 .brand-name{font-weight:600; font-size:16px}
