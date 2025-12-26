@@ -4,12 +4,15 @@ import { jsPDF } from "jspdf";
 export default function Download() {
   const [resumeData, setResumeData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [templateId, setTemplateId] = useState('professional');
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem('resumeData');
       if (saved) {
-        setResumeData(JSON.parse(saved));
+        const data = JSON.parse(saved);
+        setResumeData(data);
+        setTemplateId(data.selectedTemplate || 'professional');
       }
     } catch (err) {
       console.error('Failed to load resume data:', err);
@@ -225,7 +228,10 @@ export default function Download() {
     <section>
       <h2 className="page-title">Download Resume</h2>
       <p className="page-subtitle">
-        Export your resume in multiple formats
+        Export your resume in ATS-friendly PDF format
+        {templateId && <span style={{ marginLeft: '8px', color: '#2563eb' }}>
+          (Template: {templateId.charAt(0).toUpperCase() + templateId.slice(1)})
+        </span>}
       </p>
 
       {!resumeData && (

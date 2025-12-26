@@ -1,0 +1,328 @@
+/* ========================================
+   TEMPLATE-SPECIFIC STYLES
+   ======================================== */
+
+/* Professional Template - Two-column with orange sidebar */
+.resume-card-professional {
+    display: flex;
+    gap: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.resume-card-professional .sidebar {
+    background: #D99748;
+    color: white;
+    padding: 40px 30px;
+    width: 30%;
+    min-height: 100%;
+}
+
+.resume-card-professional .main-content {
+    padding: 40px 30px;
+    width: 70%;
+}
+
+.resume-card-professional .sidebar h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    color: white;
+    letter-spacing: 2px;
+}
+
+.resume-card-professional .sidebar h3 {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0 0 30px 0;
+    color: white;
+    text-transform: uppercase;
+}
+
+.resume-card-professional .sidebar h4 {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 24px 0 12px 0;
+    color: white;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.resume-card-professional .sidebar .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+.resume-card-professional .main-content h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 24px 0 12px 0;
+    color: #333;
+    text-transform: uppercase;
+    border-bottom: 2px solid #D99748;
+    padding-bottom: 4px;
+}
+
+.resume-card-professional .job-title {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+.resume-card-professional .company {
+    color: #666;
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* ======================================== */
+
+/* Classy Template - Traditional centered with blue headers */
+.resume-card-classy {
+    padding: 40px;
+    font-family: Georgia, 'Times New Roman', serif;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.resume-card-classy h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    text-align: center;
+    color: #000;
+    font-family: Georgia, serif;
+}
+
+.resume-card-classy .contact-line {
+    text-align: center;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 24px;
+    font-family: Arial, sans-serif;
+}
+
+.resume-card-classy h4 {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 20px 0 12px 0;
+    padding: 8px 0;
+    background: #D6E4F0;
+    text-align: center;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: Arial, sans-serif;
+}
+
+.resume-card-classy p,
+.resume-card-classy li {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.resume-card-classy .job-title {
+    font-weight: bold;
+    color: #000;
+    font-size: 13px;
+}
+
+.resume-card-classy .company {
+    color: #666;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.resume-card-classy .date {
+    float: right;
+    font-size: 12px;
+    color: #666;
+}
+
+/* ======================================== */
+
+/* Simple Template - Minimal clean design */
+.resume-card-simple {
+    padding: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.resume-card-simple .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ccc;
+}
+
+.resume-card-simple h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
+    color: #000;
+    font-family: Georgia, serif;
+}
+
+.resume-card-simple .contact {
+    text-align: right;
+    font-size: 11px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.resume-card-simple .headline {
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 24px;
+    font-weight: bold;
+}
+
+.resume-card-simple h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 24px 0 12px 0;
+    color: #000;
+    font-family: Georgia, serif;
+    font-style: italic;
+}
+
+.resume-card-simple .job-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.resume-card-simple .company {
+    font-weight: bold;
+    color: #000;
+    font-size: 13px;
+}
+
+.resume-card-simple .job-title {
+    color: #000;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.resume-card-simple ul {
+    margin: 8px 0;
+    padding-left: 20px;
+}
+
+.resume-card-simple li {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+/* ======================================== */
+
+/* Stylish Template - Navy header with gold accents */
+.resume-card-stylish {
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    overflow: hidden;
+}
+
+.resume-card-stylish .header-bar {
+    background: #2C3E50;
+    padding: 40px;
+    text-align: center;
+    color: #C9A961;
+}
+
+.resume-card-stylish .header-bar h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    color: #C9A961;
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.resume-card-stylish .header-bar h3 {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0;
+    color: #C9A961;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.resume-card-stylish .content-area {
+    display: flex;
+    gap: 0;
+}
+
+.resume-card-stylish .left-column {
+    width: 35%;
+    padding: 30px;
+    background: #f8f9fa;
+    border-right: 1px solid #ddd;
+}
+
+.resume-card-stylish .right-column {
+    width: 65%;
+    padding: 30px;
+}
+
+.resume-card-stylish h4 {
+    font-size: 13px;
+    font-weight: bold;
+    margin: 20px 0 12px 0;
+    color: #2C3E50;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.resume-card-stylish .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #555;
+}
+
+.resume-card-stylish .job-title {
+    font-weight: bold;
+    color: #2C3E50;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.resume-card-stylish .company {
+    color: #666;
+    font-size: 12px;
+}
+
+.resume-card-stylish ul {
+    margin: 8px 0;
+    padding-left: 20px;
+}
+
+.resume-card-stylish li {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 6px;
+}
+
+/* Default/fallback template styles */
+.resume-card {
+    padding: 24px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+}
