@@ -457,7 +457,7 @@ body {
 }
 
 .template-preview {
-  height: 200px;
+  /* Height removed to allow content to flow */
   background: #f1f5f9;
   border-radius: 10px;
   margin-bottom: 12px;

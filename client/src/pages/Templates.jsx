@@ -96,7 +96,7 @@ export default function Templates() {
       </div>
 
       {selected && (
-        <div style={{ marginTop: '24px', textAlign: 'center' }}>
+        <div style={{ marginTop: '40px', textAlign: 'center' }}>
           <button className="btn-primary" onClick={handleUseTemplate}>
             Use This Template
           </button>
