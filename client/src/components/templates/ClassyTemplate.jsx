@@ -8,38 +8,58 @@ const ClassyPreview = ({ resume }) => (
             {resume.phone || "555-488-1111"} | {resume.email || "email@gmail.com"} | {resume.location || "City, State"} {resume.linkedin && `| ${resume.linkedin}`}
         </div>
 
-        <h4>SUMMARY</h4>
-        <p>{resume.summary || "Your professional summary will appear here."}</p>
+        {resume.summary && (
+            <>
+                <h4>SUMMARY</h4>
+                <p>{resume.summary}</p>
+            </>
+        )}
 
-        <h4>PROFESSIONAL EXPERIENCE</h4>
-        {resume.experiences.map((exp, i) => (
-            <div key={i} style={{ marginBottom: '20px' }}>
-                <div>
-                    <span className="job-title">{exp.role || "Job Title"}</span>
-                    <span className="date" style={{ float: 'right' }}>{exp.duration || "Date"}</span>
-                </div>
-                <div className="company">{exp.company || "Company Name"}</div>
-                <ul style={{ paddingLeft: '18px', marginTop: '6px' }}>
-                    {exp.bullets.filter(b => b.trim()).map((bullet, bi) => (
-                        <li key={bi}>{bullet}</li>
-                    ))}
-                </ul>
-            </div>
-        ))}
+        {resume.experiences && resume.experiences.some(exp => exp.company || exp.role) && (
+            <>
+                <h4>PROFESSIONAL EXPERIENCE</h4>
+                {resume.experiences.map((exp, i) => (
+                    (exp.company || exp.role) && (
+                        <div key={i} style={{ marginBottom: '20px' }}>
+                            <div>
+                                <span className="job-title">{exp.role || "Job Title"}</span>
+                                <span className="date" style={{ float: 'right' }}>{exp.duration || "Date"}</span>
+                            </div>
+                            <div className="company">{exp.company || "Company Name"}</div>
+                            <ul style={{ paddingLeft: '18px', marginTop: '6px' }}>
+                                {exp.bullets.filter(b => b.trim()).map((bullet, bi) => (
+                                    <li key={bi}>{bullet}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )
+                ))}
+            </>
+        )}
 
-        <h4>EDUCATION</h4>
-        {resume.education.map((edu, i) => (
-            <div key={i} style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                    <div style={{ fontWeight: 'bold' }}>{edu.school}</div>
-                    <div>{edu.degree} {edu.field}</div>
-                </div>
-                <div>{edu.graduationYear}</div>
-            </div>
-        ))}
+        {resume.education && resume.education.some(edu => edu.school || edu.degree) && (
+            <>
+                <h4>EDUCATION</h4>
+                {resume.education.map((edu, i) => (
+                    (edu.school || edu.degree) && (
+                        <div key={i} style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between' }}>
+                            <div>
+                                <div style={{ fontWeight: 'bold' }}>{edu.school}</div>
+                                <div>{edu.degree} {edu.field}</div>
+                            </div>
+                            <div>{edu.graduationYear}</div>
+                        </div>
+                    )
+                ))}
+            </>
+        )}
 
-        <h4>SKILLS</h4>
-        <p>{resume.skills || "List your skills here"}</p>
+        {resume.skills && (
+            <>
+                <h4>SKILLS</h4>
+                <p>{resume.skills}</p>
+            </>
+        )}
     </div>
 );
 

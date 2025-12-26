@@ -16,41 +16,61 @@ const StylishPreview = ({ resume }) => (
                 <div className="contact-item">📍 {resume.location || "City, State"}</div>
                 {resume.linkedin && <div className="contact-item">💼 {resume.linkedin}</div>}
 
-                <h4>EDUCATION</h4>
-                {resume.education.map((edu, i) => (
-                    <div key={i} style={{ marginBottom: '16px' }}>
-                        <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2C3E50' }}>{edu.degree} / {edu.field}</div>
-                        <div style={{ fontSize: '11px', color: '#666' }}>{edu.school}</div>
-                        <div style={{ fontSize: '11px', color: '#666' }}>{edu.graduationYear}</div>
-                    </div>
-                ))}
+                {resume.education && resume.education.some(edu => edu.school || edu.degree) && (
+                    <>
+                        <h4>EDUCATION</h4>
+                        {resume.education.map((edu, i) => (
+                            (edu.school || edu.degree) && (
+                                <div key={i} style={{ marginBottom: '16px' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2C3E50' }}>{edu.degree} / {edu.field}</div>
+                                    <div style={{ fontSize: '11px', color: '#666' }}>{edu.school}</div>
+                                    <div style={{ fontSize: '11px', color: '#666' }}>{edu.graduationYear}</div>
+                                </div>
+                            )
+                        ))}
+                    </>
+                )}
 
-                <h4>SKILLS</h4>
-                <ul style={{ paddingLeft: '16px' }}>
-                    {(resume.skills || "").split(',').map((skill, i) => (
-                        skill.trim() && <li key={i} style={{ fontSize: '11px', marginBottom: '4px' }}>{skill.trim()}</li>
-                    ))}
-                </ul>
+                {resume.skills && (
+                    <>
+                        <h4>SKILLS</h4>
+                        <ul style={{ paddingLeft: '16px' }}>
+                            {(resume.skills || "").split(',').map((skill, i) => (
+                                skill.trim() && <li key={i} style={{ fontSize: '11px', marginBottom: '4px' }}>{skill.trim()}</li>
+                            ))}
+                        </ul>
+                    </>
+                )}
             </div>
 
             <div className="right-column">
-                <h4>PROFILE</h4>
-                <p style={{ fontSize: '12px', lineHeight: '1.6', color: '#444' }}>
-                    {resume.summary || "Write a powerful performance summary here."}
-                </p>
+                {resume.summary && (
+                    <>
+                        <h4>PROFILE</h4>
+                        <p style={{ fontSize: '12px', lineHeight: '1.6', color: '#444' }}>
+                            {resume.summary}
+                        </p>
+                    </>
+                )}
 
-                <h4>PROFESSIONAL EXPERIENCE</h4>
-                {resume.experiences.map((exp, i) => (
-                    <div key={i} style={{ marginBottom: '20px' }}>
-                        <div className="job-title">{exp.role || "JOB TITLE"}</div>
-                        <div className="company">{exp.company || "Company Name"} | {exp.duration || "Date"}</div>
-                        <ul>
-                            {exp.bullets.filter(b => b.trim()).map((bullet, bi) => (
-                                <li key={bi}>{bullet}</li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}
+                {resume.experiences && resume.experiences.some(exp => exp.company || exp.role) && (
+                    <>
+                        <h4>PROFESSIONAL EXPERIENCE</h4>
+                        {resume.experiences.map((exp, i) => (
+                            (exp.company || exp.role) && (
+                                <div key={i} style={{ marginBottom: '20px' }}>
+                                    <div className="job-title">{exp.role || "JOB TITLE"}</div>
+                                    <div className="company">{exp.company || "Company Name"} | {exp.duration || "Date"}</div>
+                                    <ul>
+                                        {exp.bullets.filter(b => b.trim()).map((bullet, bi) => (
+                                            <li key={bi}>{bullet}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )
+                        ))}
+                    </>
+                )}
             </div>
         </div>
     </div>
