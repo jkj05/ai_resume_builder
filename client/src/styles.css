@@ -366,7 +366,6 @@ body {
 
 .resume-card {
   width: 100%;
-  max-width: 900px;
   min-height: 800px;
   background: white;
   border-radius: var(--radius);
