@@ -16,6 +16,9 @@
     padding: 40px 30px;
     width: 30%;
     min-height: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .resume-card-professional .main-content {
@@ -24,19 +27,23 @@
 }
 
 .resume-card-professional .sidebar h1 {
-    font-size: 32px;
+    font-size: 26px;
     font-weight: bold;
     margin: 0 0 8px 0;
     color: white;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .resume-card-professional .sidebar h3 {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal;
     margin: 0 0 30px 0;
     color: white;
     text-transform: uppercase;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .resume-card-professional .sidebar h4 {
@@ -51,10 +58,13 @@
 
 .resume-card-professional .sidebar .contact-item {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-start;
+    gap: 8px;
     margin-bottom: 12px;
-    font-size: 13px;
+    font-size: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
 }
 
 .resume-card-professional .main-content h4 {
